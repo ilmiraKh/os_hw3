@@ -1,0 +1,49 @@
+RED='\e[31m'
+GREEN='\e[32m'
+RESET='\e[0m'
+declare -i step=1
+declare -i success_count=0
+declare -a numbers
+wrong=false
+while :
+do
+	random_number=${RANDOM: -1}
+	if [[ "${wrong}" == "false" ]]
+		then
+			echo "Step: ${step}"
+	fi
+	read -p "Please enter number from 0 to 9 (q - quit): " input
+	case "${input}" in
+		[0-9])
+			if [[ "${input}" == "${random_number}" ]]
+				then
+					echo "Hit! My number: ${random_number}"
+					success_count+=1
+					num_str="${GREEN}${random_number}${RESET}"
+					let hit_percent=success_count*100/step
+					let miss_percent=100-hit_percent
+					echo "Hit: ${hit_percent}%" "Miss: ${miss_percent}%"
+				else
+					echo "Miss! My number: ${random_number}"
+					num_str="${RED}${random_number}${RESET}"
+			fi
+			numbers+=(${num_str})
+			wrong=false
+			if [[ $step -lt 10 ]]
+				then
+					echo -e "Numbers: ${numbers[@]}"
+				else
+					echo -e "Numbers: ${numbers[@]: -10}"
+			fi
+			step+=1
+		;;
+		q)
+			echo "Bye!"
+			exit
+		;;
+		*)
+			echo -e "${RED}Input error!${RESET}"
+			wrong=true
+		;;
+	esac
+done
